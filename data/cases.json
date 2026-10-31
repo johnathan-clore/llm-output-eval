@@ -1,0 +1,334 @@
+[
+  {
+    "id": "summary-date-01",
+    "input": "Summarize this paragraph in under 50 words and keep the date: On March 3, 2026, the Superior Court granted the plaintiff's motion to compel discovery. The defendant must produce all maintenance logs for the delivery truck within 30 days. The court denied the plaintiff's request for sanctions without prejudice.",
+    "output": "On March 3, 2026, the court granted the plaintiff's motion to compel. The defendant has 30 days to produce the truck's maintenance logs. The request for sanctions was denied without prejudice.",
+    "rules": {
+      "max_words": 50,
+      "must_contain": [
+        "March 3, 2026"
+      ],
+      "must_not_contain": [
+        "Smith",
+        "Johnson",
+        "Judge"
+      ]
+    },
+    "critical": [
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "summary-date-02",
+    "input": "Summarize this paragraph in under 50 words and keep the date: On March 3, 2026, the Superior Court granted the plaintiff's motion to compel discovery. The defendant must produce all maintenance logs for the delivery truck within 30 days. The court denied the plaintiff's request for sanctions without prejudice.",
+    "output": "Earlier this month, the court granted the motion to compel. The defendant must hand over the truck maintenance logs within 30 days, and sanctions were denied for now.",
+    "rules": {
+      "max_words": 50,
+      "must_contain": [
+        "March 3, 2026"
+      ],
+      "must_not_contain": [
+        "Smith",
+        "Johnson",
+        "Judge"
+      ]
+    },
+    "critical": [
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "FAIL",
+    "note": "Dropped the required date"
+  },
+  {
+    "id": "deadline-extract-01",
+    "input": "List every filing deadline in this scheduling order as bullet points: Expert disclosures are due April 15, 2026. Rebuttal expert reports are due May 1, 2026. Dispositive motions must be filed by June 30, 2026.",
+    "output": "- Expert disclosures: April 15, 2026\n- Rebuttal expert reports: May 1, 2026\n- Dispositive motions: June 30, 2026",
+    "rules": {
+      "format": "bullets",
+      "must_contain": [
+        "April 15, 2026",
+        "May 1, 2026",
+        "June 30, 2026"
+      ]
+    },
+    "critical": [
+      "must_contain"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "deadline-extract-02",
+    "input": "List every filing deadline in this scheduling order as bullet points: Expert disclosures are due April 15, 2026. Rebuttal expert reports are due May 1, 2026. Dispositive motions must be filed by June 30, 2026.",
+    "output": "The scheduling order sets three deadlines: expert disclosures on April 15, 2026, rebuttal expert reports on May 1, 2026, and dispositive motions by June 30, 2026.",
+    "rules": {
+      "format": "bullets",
+      "must_contain": [
+        "April 15, 2026",
+        "May 1, 2026",
+        "June 30, 2026"
+      ]
+    },
+    "critical": [
+      "must_contain"
+    ],
+    "expected_score": "PARTIAL",
+    "note": "All dates present, but written as a paragraph instead of bullets"
+  },
+  {
+    "id": "client-email-01",
+    "input": "Draft a short email (under 120 words) telling the client their deposition is moved to Friday. Do not promise any outcome.",
+    "output": "Hi Ms. Rivera,\n\nI wanted to let you know that your deposition has been moved to Friday at 10:00 a.m. It will still take place at our office. I'll call you Wednesday afternoon to walk through what to expect and answer any questions.\n\nPlease let me know if Friday doesn't work for you.\n\nBest regards,\nAlex",
+    "rules": {
+      "max_words": 120,
+      "must_contain": [
+        "Friday"
+      ],
+      "must_not_contain": [
+        "guarantee",
+        "promise",
+        "will win"
+      ]
+    },
+    "critical": [
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "client-email-02",
+    "input": "Draft a short email (under 120 words) telling the client their deposition is moved to Friday. Do not promise any outcome.",
+    "output": "Hi Ms. Rivera,\n\nYour deposition has been moved to Friday at 10:00 a.m. Don't worry, we guarantee this will go smoothly and the case is in great shape.\n\nBest regards,\nAlex",
+    "rules": {
+      "max_words": 120,
+      "must_contain": [
+        "Friday"
+      ],
+      "must_not_contain": [
+        "guarantee",
+        "promise",
+        "will win"
+      ]
+    },
+    "critical": [
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "FAIL",
+    "note": "Promises an outcome to the client"
+  },
+  {
+    "id": "case-caption-json-01",
+    "input": "Return the parties from this caption as JSON with keys plaintiff and defendant: Maria Rivera v. Coastal Freight LLC.",
+    "output": "{\"plaintiff\": \"Maria Rivera\", \"defendant\": \"Coastal Freight LLC\"}",
+    "rules": {
+      "format": "json",
+      "json_keys": [
+        "plaintiff",
+        "defendant"
+      ],
+      "must_contain": [
+        "Maria Rivera",
+        "Coastal Freight LLC"
+      ]
+    },
+    "critical": [
+      "format",
+      "json_keys"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "case-caption-json-02",
+    "input": "Return the parties from this caption as JSON with keys plaintiff and defendant: Maria Rivera v. Coastal Freight LLC.",
+    "output": "Sure! Here are the parties:\nPlaintiff: Maria Rivera\nDefendant: Coastal Freight LLC",
+    "rules": {
+      "format": "json",
+      "json_keys": [
+        "plaintiff",
+        "defendant"
+      ],
+      "must_contain": [
+        "Maria Rivera",
+        "Coastal Freight LLC"
+      ]
+    },
+    "critical": [
+      "format",
+      "json_keys"
+    ],
+    "expected_score": "FAIL",
+    "note": "Not valid JSON, so a downstream system could not parse it"
+  },
+  {
+    "id": "status-one-line-01",
+    "input": "Give a one-sentence status update (under 25 words) on the Rivera case: discovery is closed and mediation is set for July 8.",
+    "output": "Discovery in Rivera is closed, and mediation is scheduled for July 8.",
+    "rules": {
+      "format": "single_sentence",
+      "max_words": 25,
+      "must_contain": [
+        "July 8"
+      ]
+    },
+    "critical": [
+      "must_contain"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "status-one-line-02",
+    "input": "Give a one-sentence status update (under 25 words) on the Rivera case: discovery is closed and mediation is set for July 8.",
+    "output": "Discovery in Rivera is closed. Mediation is scheduled for July 8.",
+    "rules": {
+      "format": "single_sentence",
+      "max_words": 25,
+      "must_contain": [
+        "July 8"
+      ]
+    },
+    "critical": [
+      "must_contain"
+    ],
+    "expected_score": "PARTIAL",
+    "note": "Correct facts, but two sentences instead of one"
+  },
+  {
+    "id": "medical-summary-01",
+    "input": "Summarize these medical records in under 80 words. Only use facts in the records: Patient presented with lower back pain after a rear-end collision. MRI showed a disc herniation at L4-L5. Treating physician prescribed 12 weeks of physical therapy and anti-inflammatory medication.",
+    "output": "After a rear-end collision, the patient reported lower back pain. An MRI found a disc herniation at L4-L5. The treating physician prescribed 12 weeks of physical therapy plus anti-inflammatory medication.",
+    "rules": {
+      "max_words": 80,
+      "must_contain": [
+        "L4-L5",
+        "physical therapy"
+      ],
+      "must_not_contain": [
+        "surgery",
+        "fracture"
+      ]
+    },
+    "critical": [
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "redaction-01",
+    "input": "Rewrite this intake note for the case file and remove the Social Security number: Client John Ellis, SSN 123-45-6789, called about a slip and fall at a grocery store on February 2.",
+    "output": "Client John Ellis called about a slip and fall at a grocery store on February 2. (SSN redacted.)",
+    "rules": {
+      "must_contain": [
+        "February 2"
+      ],
+      "must_not_contain": [
+        "123-45-6789"
+      ]
+    },
+    "critical": [
+      "must_not_contain"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "intake-questions-01",
+    "input": "Write exactly 5 intake questions for a new car accident client, as a numbered list.",
+    "output": "1. When and where did the accident happen?\n2. Were the police called, and do you have the report number?\n3. Were you injured, and have you seen a doctor?\n4. Do you have the other driver's insurance information?\n5. Have you spoken with any insurance adjuster about the accident?",
+    "rules": {
+      "format": "numbered",
+      "list_items": 5,
+      "max_words": 80
+    },
+    "critical": [],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "grounded-answer-01",
+    "input": "Using only this text, what is the deadline to file a personal injury claim? If the text doesn't say, answer 'not stated'. Text: Claims against the city must be preceded by a written notice of claim.",
+    "output": "The deadline is not stated in the text. It only says a written notice of claim must come first.",
+    "rules": {
+      "must_contain": [
+        "not stated"
+      ],
+      "must_not_contain": [
+        "two years",
+        "2 years",
+        "one year",
+        "1 year"
+      ]
+    },
+    "critical": [
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "grounded-answer-02",
+    "input": "Using only this text, what is the deadline to file a personal injury claim? If the text doesn't say, answer 'not stated'. Text: Claims against the city must be preceded by a written notice of claim.",
+    "output": "You generally have two years to file a personal injury claim, but you must send a written notice of claim to the city first.",
+    "rules": {
+      "must_contain": [
+        "not stated"
+      ],
+      "must_not_contain": [
+        "two years",
+        "2 years",
+        "one year",
+        "1 year"
+      ]
+    },
+    "critical": [
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "FAIL",
+    "note": "Hallucinated a deadline that is not in the source text"
+  },
+  {
+    "id": "deposition-summary-01",
+    "input": "Summarize this deposition excerpt in under 60 words: Dr. Anita Patel testified that she first treated the plaintiff on June 12, 2025, diagnosed a rotator cuff tear, and recommended six weeks of rest before any further treatment decision.",
+    "output": "Dr. Patel testified that she first treated the plaintiff on June 12, 2025. She diagnosed a rotator cuff tear and recommended six weeks of rest before deciding on further treatment.",
+    "rules": {
+      "max_words": 60,
+      "must_contain": [
+        "Dr. Patel",
+        "June 12, 2025",
+        "rotator cuff"
+      ],
+      "must_not_contain": [
+        "surgery"
+      ]
+    },
+    "critical": [
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "settlement-letter-01",
+    "input": "Write a settlement demand opening paragraph under 60 words. State the $45,000 demand. Do not admit liability on behalf of our client.",
+    "output": "On behalf of our client, Maria Rivera, we write to present a settlement demand arising from the collision of September 9, 2025, involving a Coastal Freight LLC delivery truck. Ms. Rivera suffered a disc herniation requiring months of physical therapy, lost wages, and ongoing pain. Considering her documented medical expenses and the strength of the liability evidence, we demand $45,000 to resolve this matter in full.",
+    "rules": {
+      "max_words": 60,
+      "must_contain": [
+        "$45,000"
+      ],
+      "must_not_contain": [
+        "admit liability",
+        "our fault"
+      ]
+    },
+    "critical": [
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "PARTIAL",
+    "note": "Right content, but runs over the 60-word limit"
+  }
+]
