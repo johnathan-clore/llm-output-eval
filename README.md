@@ -4,11 +4,11 @@
 
 An automated test suite that scores AI (LLM) outputs against rules, rates each one **Pass / Partial / Fail**, and fails the build if overall quality regresses. It runs on every push with GitHub Actions.
 
-The test cases are modeled on legal work: summarizing court orders, pulling filing deadlines, drafting client emails, redacting personal data, and answering only from a source document.
+The test cases are modeled on legal work: summarizing court orders, building medical chronologies, pulling filing deadlines, drafting client emails, redacting personal data, and answering only from a source document.
 
 ## What it tests
 
-`data/cases.json` holds 17 cases. Each one has:
+`data/cases.json` holds 19 cases. Each one has:
 
 - **input**: the prompt given to the AI
 - **output**: a real AI answer
@@ -24,8 +24,9 @@ The test cases are modeled on legal work: summarizing court orders, pulling fili
 | `format` | Output shape: `bullets`, `numbered`, `single_sentence`, or `json` |
 | `json_keys` | Required keys exist in a JSON answer |
 | `list_items` | A list has the exact number of items asked for |
+| `dates_in_order` | A medical chronology lists dates oldest to newest |
 
-The set deliberately includes bad outputs: a dropped date, a hallucinated legal deadline, an email that promises the client a result, and an answer that isn't valid JSON. A suite where everything passes proves nothing.
+The set deliberately includes bad outputs: a dropped date, a hallucinated legal deadline, an email that promises the client a result, a medical chronology with visits out of order, and an answer that isn't valid JSON. A suite where everything passes proves nothing.
 
 ## How the rating scale works
 
@@ -41,7 +42,7 @@ The rating works like a quality inspection scale: a cosmetic issue (wrong format
 
 1. **Grader accuracy** (`test_grader_matches_human_label`): the automated score must agree with my human label on every case. This proves the checks themselves work.
 2. **Output quality** (`test_output_meets_all_rules`): one test per case. Known-bad outputs are marked `xfail(strict=True)`, so they show as expected failures, and the suite alerts if one unexpectedly starts passing.
-3. **Regression guard** (`test_regression_quality_rate_above_threshold`): Pass counts 1, Partial 0.5, Fail 0. The suite fails if the quality rate drops below 65%. Today it is 68%, so turning a single passing output into a failing one breaks the build.
+3. **Regression guard** (`test_regression_quality_rate_above_threshold`): Pass counts 1, Partial 0.5, Fail 0. The suite fails if the quality rate drops below 65%. Today it is 66%, so turning a single passing output into a failing one breaks the build.
 4. **Unit tests** (`tests/test_checks.py`): each check function and the scoring logic tested on its own, including edge cases.
 
 ## How to run it
@@ -59,7 +60,7 @@ CASE                      SCORE     FAILED RULES
 summary-date-02           FAIL      must_contain (missing ['March 3, 2026'])
 deadline-extract-02       PARTIAL   format (expected bullets)
 ...
-PASS 10  PARTIAL 3  FAIL 4  quality rate 68%
+PASS 11  PARTIAL 3  FAIL 5  quality rate 66%
 ```
 
 ## Project layout
