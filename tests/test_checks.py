@@ -5,6 +5,7 @@ import pytest
 from evals.checks import (
     CheckResult,
     Score,
+    check_dates_in_order,
     check_format,
     check_json_keys,
     check_list_items,
@@ -96,3 +97,16 @@ def test_score_noncritical_failure_is_partial():
 def test_score_mostly_failing_is_fail():
     results = [_r("a", True), _r("b", False), _r("c", False)]
     assert score_results(results, []) is Score.FAIL
+
+
+def test_dates_in_order():
+    good = "- September 9, 2025: ER visit\n- September 23, 2025: MRI\n- October 2, 2025: PT"
+    bad = "- September 9, 2025: ER visit\n- October 2, 2025: PT\n- September 23, 2025: MRI"
+    assert check_dates_in_order(good, True).passed
+    result = check_dates_in_order(bad, True)
+    assert not result.passed
+    assert "September 23, 2025" in result.detail
+
+
+def test_dates_in_order_needs_two_dates():
+    assert not check_dates_in_order("Patient was seen once.", True).passed
