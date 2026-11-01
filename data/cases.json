@@ -330,5 +330,56 @@
     ],
     "expected_score": "PARTIAL",
     "note": "Right content, but runs over the 60-word limit"
+  },
+  {
+    "id": "medchron-order-01",
+    "input": "Create a medical chronology from these records, oldest visit first, as bullet points: ER visit at Mercy Hospital on September 9, 2025 for lower back pain. MRI at Valley Imaging on September 23, 2025 showed an L4-L5 disc herniation. Physical therapy intake at Summit PT on October 2, 2025.",
+    "output": "- September 9, 2025: ER visit at Mercy Hospital for lower back pain\n- September 23, 2025: MRI at Valley Imaging showed an L4-L5 disc herniation\n- October 2, 2025: Physical therapy intake at Summit PT",
+    "rules": {
+      "format": "bullets",
+      "dates_in_order": true,
+      "must_contain": [
+        "Mercy Hospital",
+        "Valley Imaging",
+        "Summit PT",
+        "L4-L5"
+      ],
+      "must_not_contain": [
+        "surgery",
+        "fracture"
+      ]
+    },
+    "critical": [
+      "dates_in_order",
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "PASS"
+  },
+  {
+    "id": "medchron-order-02",
+    "input": "Create a medical chronology from these records, oldest visit first, as bullet points: ER visit at Mercy Hospital on September 9, 2025 for lower back pain. MRI at Valley Imaging on September 23, 2025 showed an L4-L5 disc herniation. Physical therapy intake at Summit PT on October 2, 2025.",
+    "output": "- September 9, 2025: ER visit at Mercy Hospital for lower back pain\n- October 2, 2025: Physical therapy intake at Summit PT\n- September 23, 2025: MRI at Valley Imaging showed an L4-L5 disc herniation",
+    "rules": {
+      "format": "bullets",
+      "dates_in_order": true,
+      "must_contain": [
+        "Mercy Hospital",
+        "Valley Imaging",
+        "Summit PT",
+        "L4-L5"
+      ],
+      "must_not_contain": [
+        "surgery",
+        "fracture"
+      ]
+    },
+    "critical": [
+      "dates_in_order",
+      "must_contain",
+      "must_not_contain"
+    ],
+    "expected_score": "FAIL",
+    "note": "Visits listed out of chronological order"
   }
 ]
