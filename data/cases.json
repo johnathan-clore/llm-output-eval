@@ -2,7 +2,7 @@
   {
     "id": "summary-date-01",
     "input": "Summarize this paragraph in under 50 words and keep the date: On March 3, 2026, the Superior Court granted the plaintiff's motion to compel discovery. The defendant must produce all maintenance logs for the delivery truck within 30 days. The court denied the plaintiff's request for sanctions without prejudice.",
-    "output": "On March 3, 2026, the court granted the plaintiff's motion to compel. The defendant has 30 days to produce the truck's maintenance logs. The request for sanctions was denied without prejudice.",
+    "output": "the court granted the plaintiff's motion to compel. The defendant has 30 days to produce the truck's maintenance logs. The request for sanctions was denied without prejudice.",
     "rules": {
       "max_words": 50,
       "must_contain": [
