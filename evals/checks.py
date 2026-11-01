@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable
@@ -46,7 +47,7 @@ class Evaluation:
 # Helpers
 # ---------------------------------------------------------------------------
 
-BULLET_LINE = re.compile(r"^[-*•]\s+\S")
+BULLET_LINE = re.compile(r"^[-*\u2022]\s+\S")
 NUMBERED_LINE = re.compile(r"^\d+[.)]\s+\S")
 
 
@@ -136,7 +137,38 @@ def check_list_items(output: str, expected: int) -> CheckResult:
     return CheckResult("list_items", n == expected, f"{n} items (expected {expected})")
 
 
+DATE_PATTERN = re.compile(
+    r"\b(January|February|March|April|May|June|July|August|"
+    r"September|October|November|December) (\d{1,2}), (\d{4})\b"
+)
+
+
+def find_dates(text: str) -> list[datetime]:
+    """Find every date written like 'March 3, 2026', in the order it appears."""
+    dates = []
+    for match in DATE_PATTERN.finditer(text):
+        month, day, year = match.groups()
+        dates.append(datetime.strptime(f"{month} {day} {year}", "%B %d %Y"))
+    return dates
+
+
+def check_dates_in_order(output: str, required: bool) -> CheckResult:
+    """A chronology must list dates from oldest to newest."""
+    dates = find_dates(output)
+    if len(dates) < 2:
+        return CheckResult("dates_in_order", False, f"found {len(dates)} date(s), need at least 2")
+    for earlier, later in zip(dates, dates[1:]):
+        if later < earlier:
+            return CheckResult(
+                "dates_in_order", False,
+                f"{later:%B} {later.day}, {later.year} appears after "
+                f"{earlier:%B} {earlier.day}, {earlier.year}",
+            )
+    return CheckResult("dates_in_order", True, f"{len(dates)} dates in order")
+
+
 CHECKS: dict[str, Callable[[str, Any], CheckResult]] = {
+    "dates_in_order": check_dates_in_order,
     "max_words": check_max_words,
     "min_words": check_min_words,
     "must_contain": check_must_contain,
